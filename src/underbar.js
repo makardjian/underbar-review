@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -33,19 +34,50 @@
   _.first = function(array, n) {
     return n === undefined ? array[0] : array.slice(0, n);
   };
+  
+  //input: an array
+  //output: returns first element of array or n elements of array starting form the first index
 
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    if (n === undefined) {
+      return array[array.length - 1];
+    } else if (n === 0) {
+      return [];
+    } else {
+      return array.slice(-n);
+    }
   };
+  //var arr = [1,2,3,4]
+    
 
   // Call iterator(value, key, collection) for each element of collection.
   // Accepts both arrays and objects.
   //
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
-  _.each = function(collection, iterator) {
+  _.each = function(collection, iterator) { //collection = [a,b,c] , iterator = function pushes collection
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        iterator(collection[i], i, collection);
+      }
+    } else if (typeof collection === 'object' && Array.isArray(collection) === false) {
+      for (var key in collection) {
+        iterator(collection[key], key, collection);
+      }
+    }
   };
+
+  /*
+  psuedo
+    //if collection is an array
+      //iterate over array with for loop
+        //invoke iterator on each element of array
+    //if collection is an object
+      //use for in loop to iterate over each prop
+        //invoke iterator on each obj[key]
+  */
 
   // Returns the index at which value can be found in the array, or -1 if value
   // is not present in the array.
@@ -66,17 +98,97 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    var outputArr = [];
+
+    if (Array.isArray(collection)) {
+      for (var i =0; i < collection.length; i++) {
+        if (test(collection[i])) {
+          outputArr.push(collection[i]);
+        }
+      }
+      return outputArr;
+    }
   };
+
+  /*
+  push all values that pass the test to an output array
+  psuedo: 
+        // initiate a variable to hold output array
+          //check if collection is an array
+            //use each to run test on every element of collection
+              // if true push element to output array
+    */
+
+
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
-    // TIP: see if you can re-use _.filter() here, without simply
-    // copying code in and modifying it
+    var outputArr = [];
+
+    if (Array.isArray(collection)) {
+      for (var i =0; i < collection.length; i++) {
+        if (!test(collection[i])) {
+          outputArr.push(collection[i]);
+        }
+      }
+      return outputArr;
+    }
   };
+
+
+
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+    var newArr = [];
+
+    if (arguments.length === 1) {
+      for (var i =0; i < array.length; i++) {
+        if (!newArr.includes(array[i])) {
+          newArr.push(array[i]);
+        }
+      }
+    }
+
+    if (arguments.length === 2 && arguments[1] === 'true')  {
+      newArr.push(array[0]);
+      for (var i = 1; i < array.length; i++) {
+        if (array[i] !== array[i - 1]) {
+          newArr.push(array[i]);
+        } 
+      }  
+    }
+
+    if ()
+    
   };
+
+  /*
+  input: an array [2,2,3,3,4], isSorted, an iterator function
+
+  output: a new array [2, 3, 4]
+  
+  case 1: array is provided, and array is not sorted.
+    /declare a newArr variable = [];
+    /if the newArr does not contain the current element of itteration, then push it into the newArr
+    /else, do nothing. 
+    /return newArr. 
+
+  case 2: array is provided and array is sorted. 
+    /declare a newArr variable = [];
+  /push the first element from original into newArr
+    /use for loop to iterate over original array starting at index 1 to end of original array.
+      /if the current element is not equal to previous element, then push that value in 
+
+  case 3: array is provided and iterator is provided
+    /basically same thing.
+  
+
+
+
+
+
+*/
 
 
   // Return the results of applying an iterator to each element.
