@@ -151,10 +151,10 @@
     }
 
     if (arguments.length === 3) {
-      newArr.push(iterator(array[0]));
+      newArr.push(array[0]);
       for (var i = 1; i < array.length; i++) {
         if (iterator(array[i]) !== (iterator(array[i - 1]))) {
-          newArr.push(iterator(array[i]));
+          newArr.push(array[i]);
         } 
       }  
     }
@@ -265,7 +265,7 @@
     if (arguments.length === 3) {
       for (var i = 0; i < collection.length; i++) {
         if (iterator(accumulator, collection[i], i) !== undefined) {
-          accumulator += iterator(accumulator, collection[i], i);
+          accumulator = iterator(accumulator, collection[i], i);
         }
       }
       return accumulator;
@@ -275,7 +275,7 @@
       accumulator = collection[0];
       for (var i = 1; i < collection.length; i++) {
         if (iterator(accumulator, collection[i], i) !== undefined)  {
-          accumulator += iterator(accumulator, collection[i], i);
+          accumulator = iterator(accumulator, collection[i], i);
         }
       }
       return accumulator;
