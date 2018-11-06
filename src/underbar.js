@@ -139,29 +139,44 @@
 
 
   // Produce a duplicate-free version of the array.
-  // _.uniq = function(array, isSorted, iterator) {
-  //   var newArr = [];
+  _.uniq = function(array, isSorted, iterator) {
+    var newArr = [];
 
-  //   if (arguments.length === 1) {
-  //     for (var i =0; i < array.length; i++) {
-  //       if (!newArr.includes(array[i])) {
-  //         newArr.push(array[i]);
-  //       }
-  //     }
-  //   }
+    if (arguments.length === 1) {
+      for (var i = 0; i < array.length; i++) {
+        if (!newArr.includes(array[i])) {
+          newArr.push(array[i]);
+        }
+      }
+    }
 
-  //   if (arguments.length === 2 && arguments[1] === 'true')  {
-  //     newArr.push(array[0]);
-  //     for (var i = 1; i < array.length; i++) {
-  //       if (array[i] !== array[i - 1]) {
-  //         newArr.push(array[i]);
-  //       } 
-  //     }  
-  //   }
+    if (arguments.length === 3) {
+      newArr.push(iterator(array[0]));
+      for (var i = 1; i < array.length; i++) {
+        if (iterator(array[i]) !== (iterator(array[i - 1]))) {
+          newArr.push(iterator(array[i]));
+        } 
+      }  
+    }
 
-  //   if 
-    
-  // };
+    if (arguments.length === 2 && arguments[1] === 'true') {
+      newArr.push(array[0]);
+      for (var i = 1; i < array.length; i++) {
+        if (array[i] !== array[i - 1]) {
+          newArr.push(array[i]);
+        } 
+      }  
+    }
+
+    if (arguments.length === 2 && typeof arguments[1] === 'function') {
+      for (var i = 0; i < array.length; i++) {
+        if (!newArr.includes(iterator(array[i]))) {
+          newArr.push(iterator(array[i]));
+        }
+      }
+    }
+    return newArr;
+  };
 
   /*
   input: an array [2,2,3,3,4], isSorted, an iterator function
@@ -193,9 +208,19 @@
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
-    // map() is a useful primitive iteration function that works a lot
-    // like each(), but in addition to running the operation on all
-    // the members, it also maintains an array of results.
+    var outputArr = [];
+    
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        outputArr.push(iterator(collection[i], i, collection));
+      }
+    } else if (typeof collection === 'object' && Array.isArray(collection) === false) {
+      for (var key in collection) {
+        outputArr.push(iterator(collection[key], key, collection));
+      }
+    }
+
+    return outputArr;
   };
 
   /*
@@ -237,7 +262,38 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    if (arguments.length === 3) {
+      for (var i = 0; i < collection.length; i++) {
+        if (iterator(accumulator, collection[i], i) !== undefined) {
+          accumulator += iterator(accumulator, collection[i], i);
+        }
+      }
+      return accumulator;
+    }
+    
+    if (arguments.length === 2) {
+      accumulator = collection[0];
+      for (var i = 1; i < collection.length; i++) {
+        if (iterator(accumulator, collection[i], i) !== undefined)  {
+          accumulator += iterator(accumulator, collection[i], i);
+        }
+      }
+      return accumulator;
+    }
   };
+
+  /*
+    strategy: set accumulator variable = to accumulator arg; if no accumulator arg is passed
+              accumulator is equal to collection at index 0;
+              
+              //case 1 accumulator is passed as arg
+                  // iterate over collection
+                      // accu += iterator invocation over each value of collection;
+
+              //case 2 acc not passed
+                  // set acc = collection[0]
+                    //iterate over collection starting at collection[1]
+  */                  // accu += iterator invoc over each value of collection;  
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
