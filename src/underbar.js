@@ -139,29 +139,29 @@
 
 
   // Produce a duplicate-free version of the array.
-  _.uniq = function(array, isSorted, iterator) {
-    var newArr = [];
+  // _.uniq = function(array, isSorted, iterator) {
+  //   var newArr = [];
 
-    if (arguments.length === 1) {
-      for (var i =0; i < array.length; i++) {
-        if (!newArr.includes(array[i])) {
-          newArr.push(array[i]);
-        }
-      }
-    }
+  //   if (arguments.length === 1) {
+  //     for (var i =0; i < array.length; i++) {
+  //       if (!newArr.includes(array[i])) {
+  //         newArr.push(array[i]);
+  //       }
+  //     }
+  //   }
 
-    if (arguments.length === 2 && arguments[1] === 'true')  {
-      newArr.push(array[0]);
-      for (var i = 1; i < array.length; i++) {
-        if (array[i] !== array[i - 1]) {
-          newArr.push(array[i]);
-        } 
-      }  
-    }
+  //   if (arguments.length === 2 && arguments[1] === 'true')  {
+  //     newArr.push(array[0]);
+  //     for (var i = 1; i < array.length; i++) {
+  //       if (array[i] !== array[i - 1]) {
+  //         newArr.push(array[i]);
+  //       } 
+  //     }  
+  //   }
 
-    if ()
+  //   if 
     
-  };
+  // };
 
   /*
   input: an array [2,2,3,3,4], isSorted, an iterator function
