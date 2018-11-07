@@ -198,11 +198,6 @@
   case 3: array is provided and iterator is provided
     /basically same thing.
   
-
-
-
-
-
 */
 
 
@@ -262,24 +257,45 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    if (arguments.length === 3) {
-      for (var i = 0; i < collection.length; i++) {
-        if (iterator(accumulator, collection[i], i) !== undefined) {
-          accumulator = iterator(accumulator, collection[i], i);
+    if (Array.isArray(collection)) {
+
+      if (arguments.length === 3) {
+        for (var i = 0; i < collection.length; i++) {
+          if (iterator(accumulator, collection[i], i) !== undefined) {
+            accumulator = iterator(accumulator, collection[i], i);
+          }
         }
+        return accumulator;
       }
-      return accumulator;
+      
+      if (arguments.length === 2) {
+        accumulator = collection[0];
+        for (var i = 1; i < collection.length; i++) {
+          if (iterator(accumulator, collection[i], i) !== undefined)  {
+            accumulator = iterator(accumulator, collection[i], i);
+          }
+        }
+        return accumulator;
+      }
     }
     
-    if (arguments.length === 2) {
-      accumulator = collection[0];
-      for (var i = 1; i < collection.length; i++) {
-        if (iterator(accumulator, collection[i], i) !== undefined)  {
-          accumulator = iterator(accumulator, collection[i], i);
+    if (arguments.length === 3) {
+      for (var key in collection) {
+        if (iterator(accumulator, collection[key], key) !== undefined) {
+          accumulator = iterator(accumulator, collection[key], key);
         }
-      }
-      return accumulator;
+      } 
+      return accumulator; 
     }
+
+    // if (arguments.length === 3) {
+    //   for (var key in collection) {
+    //     if (iterator(accumulator, collection[key], key) !== undefined) {
+    //       accumulator = iterator(accumulator, collection[key], key);
+    //     }
+    //   } 
+    //   return accumulator; 
+    // }
   };
 
   /*
@@ -310,8 +326,28 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+    return _.reduce(collection, function(memo, val) {
+      if (!memo) {
+        return false;
+      }
+      if (!iterator(val)) { 
+        memo = false;
+      }
+      
+    }, true); 
   };
+
+  /*
+  psuedo: reuse reduce
+            return reduce takes in collection and a function(memo, val), true)
+            if (!memo) {
+                return false;
+            }
+            if (!iterator(val)) {
+                memo = false;
+            }
+            
+  */
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
