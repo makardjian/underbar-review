@@ -326,26 +326,32 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    return _.reduce(collection, function(memo, val) {
-      if (!memo) {
-        return false;
+   
+    if (arguments.length === 1) {
+      for (var i = 0; i < collection.length; i++) {
+        if (!collection[i]) {
+          return false;
+        }
       }
-      if (!iterator(val)) { 
-        memo = false;
+      return true;
+    }
+    
+    if (arguments.length === 2 && Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        if (!iterator(collection[i])) {
+          return false;
+        }
       }
-      
-    }, true); 
+      return true;
+    } 
   };
-
   /*
-  psuedo: reuse reduce
-            return reduce takes in collection and a function(memo, val), true)
-            if (!memo) {
-                return false;
-            }
-            if (!iterator(val)) {
-                memo = false;
-            }
+
+  case 1: if iterator is not provided, then use a for loop and make sure every value is truthy
+  
+  case 2: if iterator is provided, invoke iterator on each element of collection and if iterator(element) is falsy
+          return false. 
+ 
             
   */
 
@@ -353,6 +359,28 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    console.log(iterator);
+    
+    if (collection.length === 0) {
+      return false;
+    }
+
+    if (arguments.length === 1) {
+      for (var j = 0; j < collection.length; j++) {
+        if (collection[j]) {
+          return true;
+        } else {
+          return false;
+        }
+      }      
+    } else {
+      for (var i = 0; i < collection.length; i++) {
+        if (iterator(collection[i])) {
+          return true;
+        } 
+      }
+      return false;
+    }
   };
 
 
@@ -375,11 +403,34 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    for (var i = 1; i < arguments.length; i++) {
+      var currentObj = arguments[i];
+      for (var key in currentObj) {
+        obj[key] = currentObj[key];
+      }  
+    }
+    return obj;
   };
-
+  
+  /*
+  iterate over Arguments object from the 1st index
+  use a for in loop on the each objects arguments 
+  compare the keys from each objects arguments to the first objects keys
+      set those keys onto destination obj;
+  */
+  
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for (var i = 1; i < arguments.length; i++) {
+      var currentObj = arguments[i];
+      for (var key in currentObj) {
+        if (obj[key] === undefined) {
+          obj[key] = currentObj[key];
+        }
+      }  
+    }
+    return obj;
   };
 
 
